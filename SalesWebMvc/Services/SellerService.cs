@@ -20,5 +20,12 @@ namespace SalesWebMvc.Services
         {
             return _context.Seller.ToList(); // Acesso ao banco de dados
         }
+
+        // Para inserir um novo vendedor no DB
+        public void Insert(Seller obj)
+        {
+            _context.Add(obj);
+            _context.SaveChanges();
+        }
     }
 }
