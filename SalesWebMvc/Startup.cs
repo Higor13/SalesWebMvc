@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using SalesWebMvc.Services;
-using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Data;
+using System.Globalization;
 
 namespace SalesWebMvc
 {
@@ -50,6 +52,16 @@ namespace SalesWebMvc
         {
             if (env.IsDevelopment())
             {
+                // Definir o locale da aplicação como sendo dos EUA
+                var enUS = new CultureInfo("en-US");
+                var localizationOptions = new RequestLocalizationOptions
+                {
+                    DefaultRequestCulture = new RequestCulture(enUS),
+                    SupportedCultures = new List<CultureInfo> { enUS },
+                    SupportedUICultures = new List<CultureInfo> { enUS }
+                };
+                app.UseRequestLocalization(localizationOptions);
+
                 app.UseDeveloperExceptionPage();
                 seedingService.Seed();
             }
