@@ -24,8 +24,21 @@ namespace SalesWebMvc.Services
         // Para inserir um novo vendedor no DB
         public void Insert(Seller obj)
         {
-            obj.Department = _context.Department.First(); // Para pergar o primeiro dep do DB e associar ao seller(obj)
             _context.Add(obj);
+            _context.SaveChanges();
+        }
+
+        // Encontra o vendedor pelo Id
+        public Seller FindById (int id)
+        {
+            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+        }
+
+        // Remover o vendedor pelo Id
+        public void Remove(int id)
+        {
+            var obj = _context.Seller.Find(id);
+            _context.Seller.Remove(obj); // Remove o objeto do DbSet. Precisamos confirmar para o Entity efetivar no DB
             _context.SaveChanges();
         }
     }
