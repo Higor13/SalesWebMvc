@@ -32,7 +32,7 @@ namespace SalesWebMvc.Controllers
         // Método que abre o formulário para cadastrar um vendedor
         public async Task<IActionResult> Create()
         {
-            var departments =await _departmentService.FindAllAsync(); // 1° Carregar os departamentos (buscando no DB)
+            var departments = await _departmentService.FindAllAsync(); // 1° Carregar os departamentos (buscando no DB)
             var viewModel = new SellerFormViewModel { Departments = departments }; // 2° Instanciar um objeto do ViewModel
             return View(viewModel); // 3° Passamos o objeto viewModel para a View
         }
@@ -56,7 +56,7 @@ namespace SalesWebMvc.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id not provided"});
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             var obj = await _sellerService.FindByIdAsync(id.Value); // O value é por ele ser um objeto opicional, pegar o valor caso exista (int?)
@@ -71,8 +71,15 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] // Notação para previnir que a app sofra ataque CSRF (tirar proveito de autenticação)
         public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index)); // Redireciona para o Index
+            try
+            {
+                await _sellerService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index)); // Redireciona para o Index
+            }
+            catch (IntegrityExcepetion e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
 
         // Details GET Action
@@ -114,7 +121,7 @@ namespace SalesWebMvc.Controllers
         // Ação Edit com POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit (int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             if (!ModelState.IsValid)
             {
@@ -142,6 +149,6 @@ namespace SalesWebMvc.Controllers
         {
             var viewModel = new ErrorViewModel { Message = message, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier };
             return View(viewModel);
-        }        
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace SalesWebMvc.Services
         }
 
         // Encontra o vendedor pelo Id
-        public async Task<Seller> FindByIdAsync (int id)
+        public async Task<Seller> FindByIdAsync(int id)
         {
             return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
         }
@@ -39,9 +39,16 @@ namespace SalesWebMvc.Services
         // Remover o vendedor pelo Id
         public async Task RemoveAsync(int id)
         {
-            var obj = await _context.Seller.FindAsync(id);
-            _context.Seller.Remove(obj); // Remove o objeto do DbSet. Precisamos confirmar para o Entity efetivar no DB
-            await _context.SaveChangesAsync();
+            try
+            {
+                var obj = await _context.Seller.FindAsync(id);
+                _context.Seller.Remove(obj); // Remove o objeto do DbSet. Precisamos confirmar para o Entity efetivar no DB
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                throw new IntegrityExcepetion("Can't delete seller because he/she has sales");
+            }
         }
 
         // Atualizar um objeto utilizando o Entity FrameWork
