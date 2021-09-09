@@ -1,0 +1,16 @@
+﻿@model SalesWebMvc.Models.ViewModels.ErrorViewModel // Recebe um objeto do tipo ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<!-- Mostra essa mensagem -->
+<h1 class="text-danger">@ViewData["Title"]</h1>
+<h2 class="text-danger">@Model.Message</h2>
+
+<!-- Se existir um RequestId -->
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
